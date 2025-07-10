@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/static/img.jpeg">
+    <title>Diabetes Prediction</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            background-image: url('https://images.livemint.com/img/2024/02/07/original/isens-usa-ViLMUXvGXVg-unsplash_1707274873099.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            z-index: -1;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 15px rgba(37, 99, 235, 0.6);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #24384b;
+            color: #ecf0f1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #e5ecf1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #1abc9c;
+        }
+
+        .menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: #ecf0f1;
+            cursor: pointer;
+        }
+
+        .menu-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        #mobile-menu {
+            display: none;
+            background-color: #34495e;
+            padding: 1rem;
+        }
+
+        #mobile-menu a {
+            display: block;
+            color: #3498db;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        #mobile-menu a:hover {
+            color: #1abc9c;
+        }
+
+        /* Main Content Styles */
+        .container {
+            background-color: rgba(255, 255, 255, 0.6);
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            animation: fadeIn 1s ease-out;
+        }
+
+        #predictionForm {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease-out 0.3s;
+            animation-fill-mode: backwards;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: scale(1.01);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background-color: #eea950;
+            color: #ffffff;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+            animation: glow 1.5s infinite;
+        }
+
+        #result {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #result.active {
+            opacity: 1;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #result p.text-red-500 {
+            color: #e74c3c;
+        }
+
+        #result p.text-lg {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chatbot-button {
+            background-color: #9cc190;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .chatbot-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .chatbot-window {
+            display: none;
+            background-color: #ffffff;
+            width: 300px;
+            max-height: 400px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .chatbot-window.active {
+            display: block;
+        }
+
+        .chatbot-header {
+            background-color: #24384b;
+            color: #ecf0f1;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .chatbot-body {
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .chatbot-message {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .chatbot-message.user {
+            text-align: right;
+            color: #3498db;
+        }
+
+        .chatbot-message.bot {
+            text-align: left;
+            color: #34495e;
+        }
+
+        .chatbot-input {
+            display: flex;
+            border-top: 1px solid #bdc3c7;
+        }
+
+        .chatbot-input input {
+            flex-grow: 1;
+            border: none;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+        }
+
+        .chatbot-input button {
+            background-color: #eea950;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .chatbot-input button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 2rem 0;
+            margin-top: auto;
+            animation: fadeIn 1s ease-out 0.6s;
+            animation-fill-mode: backwards;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer-container a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-container a:hover {
+            color: #1abc9c;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .menu-button {
+                display: block;
+            }
+
+            #mobile-menu.active {
+                display: block;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            #predictionForm {
+                padding: 1.5rem;
+            }
+
+            .chatbot-window {
+                width: 90%;
+                max-width: 300px;
+                right: 10px;
+                bottom: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Diabetes Prediction</div>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/what-is-diabetes">What is Diabetes</a>
+                <a href="/contact">Contact</a>
+            </nav>
+            <button class="menu-button" onclick="toggleMenu()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/what-is-diabetes">What is Diabetes</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Diabetes Prediction</h1>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label>Gender</label>
+                <select name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <input type="number" name="age" required>
+            </div>
+            <div class="form-group">
+                <label>Hypertension</label>
+                <select name="hypertension">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Heart Disease</label>
+                <select name="heart_disease">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Smoking History</label>
+                <select name="smoking_history">
+                    <option value="never">Never</option>
+                    <option value="current">Current</option>
+                    <option value="No Info">No Info</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>BMI</label>
+                <input type="number" step="0.01" name="bmi" required>
+            </div>
+            <div class="form-group">
+                <label>HbA1c Level</label>
+                <input type="number" step="0.1" name="hba1c" required>
+            </div>
+            <div class="form-group">
+                <label>Blood Glucose Level</label>
+                <input type="number" name="blood_glucose" required>
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <button class="chatbot-button" onclick="toggleChatbot()">
+           <img src="/static/chatbot _cat.png" width="100%"/>
+        </button>
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">Health Assistant</div>
+            <div class="chatbot-body" id="chatbot-body">
+                <div class="chatbot-message bot">Hello! I'm here to answer your health-related questions. Try typing
+                    'hello' for general health tips or 'diabetes' for information on symptoms and prevention!</div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input" placeholder="Type your question...">
+                <button onclick="sendChatbotMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <span>© 2025 Diabetes Prediction. All rights reserved (Pawanpreet Kaur). |
+                <a href="https://github.com/Pawan-235" target="_blank" aria-label="GitHub Profile">GitHub</a> |
+                <a href="http://www.linkedin.com/in/pawanpreet-kaur-9582822ba" target="_blank"
+                    aria-label="LinkedIn Profile">LinkedIn</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Form Submission, Mobile Menu Toggle, and Chatbot -->
+    <script>
+        // Prediction Form Submission
+        document.getElementById('predictionForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('result');
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                        <p class="text-lg font-semibold">Prediction: ${data.message}</p>
+                        <p>Probability of Diabetes: ${(data.probability * 100).toFixed(2)}%</p>
+                        <p>Model Accuracy: ${data.accuracy !== null ? (data.accuracy * 100).toFixed(2) + '%' : 'Not calculated (using pre-trained model)'}</p>
+                    `;
+                    }
+                    resultDiv.classList.add('active');
+                })
+                .catch(error => {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+                    resultDiv.classList.add('active');
+                });
+        });
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('active');
+        }
+
+        // Chatbot Functionality
+        function toggleChatbot() {
+            const chatbotWindow = document.getElementById('chatbot-window');
+            chatbotWindow.classList.toggle('active');
+        }
+
+        function sendChatbotMessage() {
+            const input = document.getElementById('chatbot-input');
+            const chatbotBody = document.getElementById('chatbot-body');
+            const message = input.value.trim().toLowerCase();
+            if (!message) return;
+
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chatbot-message user';
+            userMessage.textContent = message;
+            chatbotBody.appendChild(userMessage);
+
+            // Rule-based responses
+            let response;
+            if (message === 'hello') {
+                response = "Here are 5 general health tips:\n1. Eat a balanced diet rich in fruits, vegetables, and whole grains.\n2. Exercise regularly, aiming for at least 30 minutes most days.\n3. Stay hydrated by drinking plenty of water.\n4. Get 7-8 hours of sleep per night.\n5. Manage stress through mindfulness or relaxation techniques.";
+            } else if (message === 'diabetes') {
+                response = "Diabetes Information:\n- Symptoms: Increased thirst, frequent urination, fatigue, blurred vision, slow-healing sores, and unexplained weight loss.\n- Prevention: Maintain a healthy diet, exercise regularly (at least 30 minutes most days), manage your weight, avoid smoking, and monitor blood sugar levels.";
+            } else {
+                response = "I'm not sure how to answer that. Try typing 'hello' for general health tips or 'diabetes' for information on symptoms and prevention!";
+            }
+
+            // Add bot response
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chatbot-message bot';
+            botMessage.textContent = response;
+            chatbotBody.appendChild(botMessage);
+
+            // Scroll to bottom
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+            // Clear input
+            input.value = '';
+
+            // Optionally, send to backend for more complex queries
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response && data.response !== response) {
+                        const additionalBotMessage = document.createElement('div');
+                        additionalBotMessage.className = 'chatbot-message bot';
+                        additionalBotMessage.textContent = data.response;
+                        chatbotBody.appendChild(additionalBotMessage);
+                        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+                    }
+                })
+                .catch(error => console.error('Chatbot error:', error));
+        }
+
+        // Allow sending message with Enter key
+        document.getElementById('chatbot-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendChatbotMessage();
+            }
+        });
+    </script>
+</body>
+
+</html>

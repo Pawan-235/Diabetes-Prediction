@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/static/img.jpeg">
+    <title>Contact - Diabetes Prediction</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            background-image: url('https://images.livemint.com/img/2024/02/07/original/isens-usa-ViLMUXvGXVg-unsplash_1707274873099.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            z-index: -1;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(37, 99, 235, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6); }
+        }
+        @keyframes photoPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #24384b;
+            color: #ecf0f1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideInDown 0.8s ease-out;
+        }
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        nav a {
+            color: #e5ecf1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #1abc9c;
+        }
+        .menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: #ecf0f1;
+            cursor: pointer;
+        }
+        .menu-button svg {
+            width: 24px;
+            height: 24px;
+        }
+        #mobile-menu {
+            display: none;
+            background-color: #34495e;
+            padding: 1rem;
+        }
+        #mobile-menu a {
+            display: block;
+            color: #3498db;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        #mobile-menu a:hover {
+            color: #1abc9c;
+        }
+
+        /* Main Content Styles */
+        .container {
+            background-color: rgba(255, 255, 255, 0.6);
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            animation: fadeIn 1s ease-out;
+        }
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease-out 0.3s;
+            animation-fill-mode: backwards;
+        }
+        .developer-photo {
+            display: block;
+            width: 150px;
+            height: 150px;
+            border:2px solid #eea950;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            object-fit: cover;
+            animation: photoPop 0.8s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .developer-photo:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+        h3{
+            color:#eea950;
+        }
+        .developer-info h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            /* color: #2c3e50; */
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .developer-bio {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #34495e;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+        .contact-info {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            padding: 0;
+        }
+        .contact-info li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+        }
+        .contact-info li a {
+            color: #eea950;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .contact-info li a:hover {
+            color: #1abc9c;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: scale(1.01);
+        }
+        button[type="submit"] {
+            width: 100%;
+            background-color: #eea950;
+            color: #ffffff;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+            animation: glow 1.5s infinite;
+        }
+        #contactResult {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #contactResult.active {
+            opacity: 1;
+            animation: fadeIn 0.5s ease-out;
+        }
+        #contactResult p.text-red-500 {
+            color: #e74c3c;
+        }
+        #contactResult p.text-lg {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 2rem 0;
+            margin-top: auto;
+            animation: fadeIn 1s ease-out 0.6s;
+            animation-fill-mode: backwards;
+        }
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .footer-container a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-container a:hover {
+            color: #1abc9c;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            .menu-button {
+                display: block;
+            }
+            #mobile-menu.active {
+                display: block;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .content {
+                padding: 1.5rem;
+            }
+            .developer-photo {
+                width: 80px;
+                height: 80px;
+            }
+            .developer-info h3 {
+                font-size: 1.3rem;
+            }
+            .developer-bio {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Diabetes Prediction</div>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/what-is-diabetes">What is Diabetes</a>
+                <a href="/contact">Contact</a>
+            </nav>
+            <button class="menu-button" onclick="toggleMenu()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/what-is-diabetes">What is Diabetes</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Contact Us</h1>
+        <div class="content">
+            <img src="/static/img.jpeg" alt="Developer Photo" class="developer-photo"
+                onerror="this.src='https://via.placeholder.com/100';">
+            <div class="developer-info">
+                <h3>Pawanpreet Kaur</h3>
+                <p class="developer-bio">I am a passionate B.Tech student specializing in Python, AI, Machine Learning (ML)
+                    and Web Development. With a strong foundation in dynamic web applications, I leverage frameworks to
+                    build robust, scalable, and interactive platforms. My aim is to create intelligent, data-driven
+                    solutions that solve real-world challenges.
+                    As I continue to learn and grow, I focus on building end-to-end web applications that integrate
+                    cutting-edge AI and ML capabilities to offer impactful user experiences. Whether developing applications
+                    from the ground up or enhancing existing systems, I am committed to delivering high-quality, efficient,
+                    and innovative solutions.</p>
+            </div>
+            <ul class="contact-info">
+                <li><strong>Email:</strong> <a href="mailto:pawanpreetk522@gmail.com">pawanpreetk522@gmail.com</a></li>
+                <li><strong>Phone:</strong> +91 8968537201</li>
+                <li><strong>Address:</strong> Patiala, Punjab, India</li>
+            </ul>
+            <p class="contact-info">
+                Have questions or need assistance? Reach out to me, and I'll get back to you as soon as possible.
+            </p>
+            <form id="contactForm" action="https://formsubmit.co/pawanpreetk522@gmail.com" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit">Send Message</button>
+            </form>
+            <div id="contactResult"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <span>© 2025 Diabetes Prediction. All rights reserved (Pawanpreet Kaur). | 
+                <a href="https://github.com/Pawan-235" target="_blank" aria-label="GitHub Profile">GitHub</a> | 
+                <a href="http://www.linkedin.com/in/pawanpreet-kaur-9582822ba" target="_blank" aria-label="LinkedIn Profile">LinkedIn</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Form Submission and Mobile Menu Toggle -->
+    <script>
+            function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
